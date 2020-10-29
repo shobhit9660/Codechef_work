@@ -1,0 +1,123 @@
+#include <bits/stdc++.h>
+using namespace   std;
+#define N 100004
+#define all(x)    (x).begin(), (x).end()
+#define ss	  	  second
+#define ff	  	  first
+
+
+int  n;
+
+#define ll long long int
+
+vector<int>max_p (N,-1);
+
+int dutil(vector<vector<int> > & input_graph ,int ver,int par=-1)
+{
+	int below=0,p_cent =0;
+
+
+
+
+	for(auto i:input_graph[ver])
+	{
+		if(i  ==  par)
+			continue;
+
+		int z;
+		z=dutil(input_graph ,i,ver);
+		    
+		    p_cent =max(p_cent ,z);
+
+		    below+=z;
+		    
+	}
+	max_p [ver]=max(p_cent ,n-below-1);
+	
+
+
+	return below+=1;
+}
+int main()
+{
+	
+	ll t;                  
+	cin>>t;
+	while(t--)
+	{	
+		
+		cin>>n;
+		
+		 		vector<vector<int> >input_graph (n,vector<int>());
+		
+
+
+
+		 		for(int i=0;i<n-1;i++)
+		 		{
+		 			ll inp_1,inp_2;
+		 			
+
+		 			cin>>inp_1;
+
+
+		 			cin>>inp_2;
+		 			
+
+		 			inp_1--;
+
+		 			inp_2--;
+		 			input_graph [inp_1].push_back (inp_2);
+		 		    
+		 		    input_graph [inp_2].push_back (inp_1);
+
+		 		}
+	
+
+
+		 		dutil(input_graph ,0);
+		 		
+		 		vector<pair<int,int> >answer_p_focous ;
+		 		for(int i=0;i<n;i++)
+		 		{
+		 			answer_p_focous .push_back (make_pair (max_p [i],i));
+		 		}
+
+		 		sort(all(answer_p_focous ));
+			
+
+
+
+
+			if(answer_p_focous [0].ff == answer_p_focous [1].ff)
+			{
+				int u=answer_p_focous [1].ss;
+				int v=answer_p_focous [0].ss;
+				for(int i=0;i<input_graph [u].size();i++)
+				{
+					if(input_graph [u][i]!= v)
+					{
+						cout<<u+1<<" "<<input_graph [u][i]+1<<endl;
+						cout<<v+1<<" "<<input_graph [u][i]+1<<endl;
+						break;
+					}
+				}
+			}
+			
+
+
+
+			else
+			{
+				cout<<1<<" "<<input_graph [0][0]+1<<endl;
+				cout<<1<<" "<<input_graph [0][0]+1<<endl;
+			}
+
+			for(int i=0;i<n;i++)
+				max_p[i]=-1;
+	}
+
+return 0; 
+}
+
+ 
