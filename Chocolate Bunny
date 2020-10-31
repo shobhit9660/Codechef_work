@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace   std;
+int main()
+{
+    
+        int n;
+        cin>>n;
+
+
+
+        int ans[n];
+
+        memset(ans,0,sizeof(ans));
+
+        
+
+        int k=0;
+        int j=1;
+        for(int i=1;i<n;i++)
+        {
+            int inp1,inp2;
+            cout<<"? "<<k+1<<" "<<j+1<<endl;
+            
+
+            cin>>inp1;
+
+
+
+            cout<<"? "<<j+1<<" "<<k+1<<endl;
+            
+
+            cin>>inp2;
+            
+
+            if(inp1>inp2)
+            {
+                ans[k]=inp1;
+                k=j;
+            }
+            else
+                ans[j]=inp2;
+                
+                j=i+1;
+            
+        }
+
+
+
+        cout<<"! ";
+        for(int i=0;i<n;i++)
+        {
+            if(ans[i]==0)
+                ans[i]=n;
+            cout<<ans[i]<<" ";
+        }
+        cout<<"\n";
+
+        cout.flush();
+return 0; 
+}
+
+ 
