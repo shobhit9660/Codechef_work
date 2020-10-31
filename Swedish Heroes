@@ -1,0 +1,197 @@
+#define LOCAL
+#define _USE_MATH_DEFINES
+#include <array>
+#include <cassert>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <list>
+#include <set>
+#include <map>
+#include <unordered_set>
+#include <unordered_map>
+#include <algorithm>
+#include <complex>
+#include <cmath>
+#include <numeric>
+#include <bitset>
+#include <functional>
+#include <random>
+#include <ctime>
+
+using namespace std;
+
+template <typename A, typename B>
+ostream& operator <<(ostream& out, const pair<A, B>& a) {
+  out << "(" << a.first << "," << a.second << ")";
+  return out;
+}
+template <typename T, size_t N>
+ostream& operator <<(ostream& out, const array<T, N>& a) {
+  out << "["; bool first = true;
+  for (auto& v : a) { out << (first ? "" : ", "); out << v; first = 0;} out << "]";
+  return out;
+}
+template <typename T>
+ostream& operator <<(ostream& out, const vector<T>& a) {
+  out << "["; bool first = true;
+  for (auto& v : a) { out << (first ? "" : ", "); out << v; first = 0;} out << "]";
+  return out;
+}
+template <typename T, class Cmp>
+ostream& operator <<(ostream& out, const set<T, Cmp>& a) {
+  out << "{"; bool first = true;
+  for (auto& v : a) { out << (first ? "" : ", "); out << v; first = 0;} out << "}";
+  return out;
+}
+template <typename U, typename T, class Cmp>
+ostream& operator <<(ostream& out, const map<U, T, Cmp>& a) {
+  out << "{"; bool first = true;
+  for (auto& p : a) { out << (first ? "" : ", "); out << p.first << ":" << p.second; first = 0;} out << "}";
+  return out;
+}
+#ifdef LOCAL
+#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+#else
+#define trace(...) 42
+#endif
+template <typename Arg1>
+void __f(const char* name, Arg1&& arg1){
+  cerr << name << ": " << arg1 << endl;
+}
+template <typename Arg1, typename... Args>
+void __f(const char* names, Arg1&& arg1, Args&&... args){
+  const char* comma = strchr(names + 1, ',');
+  cerr.write(names, comma - names) << ": " << arg1 << " |";
+  __f(comma + 1, args...);
+}
+
+typedef long long int64;
+typedef pair<int, int> ii;
+#define SZ(x) (int)((x).size())
+const int INF = 1 << 29;
+const int MOD = 1e9 + 7;
+mt19937 mrand(random_device{}());
+int rnd(int x) { return mrand() % x; }
+
+struct fast_ios {
+  fast_ios() {
+    cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cout << fixed << setprecision(10);
+  };
+} fast_ios_;
+
+const int N = 1e2 + 10;
+int fact[N], ifact[N], inv[N];
+
+struct comb_init {
+  comb_init() {
+    inv[1] = 1;
+    for (int i = 2; i < N; ++i) {
+      inv[i] = (MOD - MOD / i) * (int64)inv[MOD % i] % MOD;
+    }
+    fact[0] = ifact[0] = 1;
+    for (int i = 1; i < N; ++i) {
+      fact[i] = (int64)fact[i - 1] * i % MOD;
+      ifact[i] = (int64)ifact[i - 1] * inv[i] % MOD;
+    }
+  }
+} comb_init_;
+
+int64 comb(int n, int m) {
+  if (n < m || m < 0) return 0;
+  return (int64)fact[n] * ifact[m] % MOD * ifact[n - m] % MOD;
+}
+
+const int K = 15;
+int main() {
+//   vector<int> mask(K);
+//   for (int n = 1; n < K; ++n) mask[n] = (1 << n) - 1;
+//   vector<set<int>> a(K);
+//   a[1] = {1};
+//   for (int n = 2; n < K; ++n) {
+//     for (int L = 1; L < n; ++L) {
+//       int R = n - L;
+//       for (auto& x : a[L]) {
+//         for (auto& y : a[R]) {
+//           a[n].insert(((mask[L] ^ x) << R) | (mask[R] ^ y));
+//         }
+//       }
+//     }
+//   }
+//   for (int n = 1; n < K; ++n) {
+//     // trace(n, SZ(a[n]), a[n]);
+//     set<int> cnt;
+//     for (auto& x : a[n]) {
+//       int sum = 0;
+//       for (int i = 0; i < n; ++i) {
+//         if ((x >> i) & 1) sum++;
+//       }
+//       cnt.insert(n - sum);
+//     }
+//     int sum = 0;
+//     for (auto& k : cnt) {
+//       vector<int> p(n, 1);
+//       for (int i = 0; i < k; ++i) p[i] = 0;
+//       do {
+//         int t = 0;
+//         for (int i = 0; i < n; ++i) {
+//           t = t * 2 + p[i];
+//         }
+//         if (!a[n].count(t)) trace(n, p);
+//       } while (next_permutation(p.begin(), p.end()));
+//       sum += comb(n, k);
+//     }
+//     trace(n, cnt, SZ(a[n]), sum);
+//   }
+
+//   return 0;
+// }
+
+  int n;
+  cin >> n;
+  vector<ii> a(n);
+  for (int i = 0; i < n; ++i) {
+    cin >> a[i].first;
+    a[i].second = i;
+  }
+  if (n == 1) {
+    cout << a[0].first << '\n';
+    return 0;
+  }
+  sort(a.begin(), a.end());
+
+  vector<int64> pre(n + 1);
+  for (int i = 0; i < n; ++i) pre[i + 1] = pre[i] + a[i].first;
+
+  vector<int> magic = {1, 0, 2};
+  int r = magic[n % 3];
+
+  int64 best = -(1LL << 60);
+  for (int k = r; k <= n; k += 3) {
+    if (k * 2 + 1 == n) {
+      bool found = false;
+      for (int i = 0; i < k; ++i) found |= a[i].second % 2 == 0;
+      int64 cur = pre[n] - pre[k] * 2;
+      if (!found) {
+        cur += 2 * a[k - 1].first;
+        cur -= 2 * a[k].first;
+      }
+      best = max(best, cur);
+    } else {
+      int64 cur = pre[n] - pre[k] * 2;
+      // trace(k, cur);
+      best = max(best, cur);
+    }
+  }
+
+  cout << best << '\n';
+  return 0;
+}
